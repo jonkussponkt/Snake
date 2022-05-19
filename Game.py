@@ -26,12 +26,21 @@ class Game:
                 return True
         return False
 
-    def generate_apple(self, x, y):
+    @staticmethod
+    def generate_apple(x, y):
         apple_x = random.randint(10, x)
         apple_y = random.randint(45, y)
         apple_x = round(apple_x / 10) * 10
         apple_y = round(apple_y / 10) * 10
         return apple_x, apple_y
+
+    @staticmethod
+    def handle_events():
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit(0)
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                sys.exit(0)
 
     def game(self):
         generate_apple = 0
@@ -40,11 +49,7 @@ class Game:
         ticks_per_second = 100.0
         game_lasts = True
         while game_lasts:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    sys.exit(0)
-                elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                    sys.exit(0)
+            self.handle_events()
             delta += clock.tick() / 5000.0
             while delta > 1 / ticks_per_second:
                 delta -= 1 / ticks_per_second
@@ -112,7 +117,9 @@ class Game:
 
     def goodbye_window(self):
         self.screen.fill((50, 50, 150))
-        while pygame.key.get_pressed()[pygame.K_ESCAPE] == 0:
+        keys = pygame.key.get_pressed()
+        while keys[pygame.K_ESCAPE] == 0:
+            self.handle_events()
             font_style = pygame.font.SysFont("comicsansms", 35)
             message_to_lost = font_style.render(f"You lost :( Press ESC to leave", True, (255, 0, 0))
             self.screen.blit(message_to_lost, [350, 315])
